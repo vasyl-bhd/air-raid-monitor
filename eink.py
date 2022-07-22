@@ -7,14 +7,8 @@ from svglib.svglib import svg2rlg
 from reportlab.graphics import renderPM
 from PIL import Image, ImageDraw, ImageFont
 from observer import Observer
-
-try:
-    from waveshare_epd import epd2in13_V2
-except ImportError:
-    pass
-
-SCREEN_HEIGHT = 122
-SCREEN_WIDTH = 250
+from waveshare_epd import epd5in83b_V2
+import logging
 
 FONT_SMALL = ImageFont.truetype(
     os.path.join(os.path.dirname(__file__), 'Monaco.ttf'), 11)
@@ -25,14 +19,16 @@ class Eink(Observer):
     def __init__(self, observable):
         super().__init__(observable=observable)
         self.epd = self._init_display()
-        self.screen_image = Image.new('1', (SCREEN_WIDTH, SCREEN_HEIGHT), 255)
+        self.screen_image = Image.new('1', (self.epd.width, self.epd.height), 255)
         self.screen_draw = ImageDraw.Draw(self.screen_image)
 
     @staticmethod
     def _init_display():
-        epd = epd2in13_V2.EPD()
-        epd.init(epd.FULL_UPDATE)
-        epd.Clear(0xFF)
+        logging.info("Initializing display")
+
+        epd = epd5in83b_V2.EPD()
+        epd.init()
+        epd.Clear()
         return epd
 
     def update(self, data):
@@ -41,21 +37,21 @@ class Eink(Observer):
         self.epd.display(self.epd.getbuffer(screen_image_rotated))
 
     def close(self):
-        epd2in13_V2.epdconfig.module_exit()
+        epd5in83b_V2.epdconfig.module_exit()
 
     def form_image(self, regions, screen_draw, image):
         def pos(x, y):
             side = 14
             return [(x, y), (x + side, y + side)]
 
-        screen_draw.rectangle((0, 0, SCREEN_WIDTH, SCREEN_HEIGHT), fill="#ffffff")
+        screen_draw.rectangle((0, 0, self.epd.width, self.epd.height), fill="#ffffff")
 
         if not regions:
             self.connection_lost_text(screen_draw)
             return
 
         map = self.generate_map(regions)
-        image.paste(map, (SCREEN_WIDTH - 182, 0))
+        image.paste(map, (self.edp.width - 182, 0))
         self.text(screen_draw)
         self.legend(image, pos, regions, screen_draw)
 

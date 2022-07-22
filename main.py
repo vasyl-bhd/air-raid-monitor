@@ -4,6 +4,10 @@ from urllib.error import HTTPError, URLError
 from urllib.request import urlopen
 from eink import Eink
 from observer import Observable
+from waveshare_epd import epd5in83b_V2
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
 
 
 def get_state():
@@ -19,7 +23,7 @@ def main():
     try:
         main_cycle(observable)
     except IOError as e:
-        print("IOError: "+str(e))
+        print("IOError: " + str(e))
     except KeyboardInterrupt:
         observable.close()
 
@@ -35,6 +39,10 @@ def main_cycle(observable):
         except (HTTPError, URLError, IOError) as e:
             print("Error: " + str(e))
             timeout_count += 1
+        except KeyboardInterrupt:
+            logging.info("ctrl + c:")
+            epd5in83b_V2.epdconfig.module_exit()
+            exit()
         finally:
             if timeout_count >= 3:
                 curr_state = None
