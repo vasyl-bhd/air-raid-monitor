@@ -11,7 +11,7 @@ from waveshare_epd import epd5in83b_V2
 import logging
 
 FONT_SMALL = ImageFont.truetype(
-    os.path.join(os.path.dirname(__file__), 'Monaco.ttf'), 11)
+    os.path.join(os.path.dirname(__file__), 'Monaco.ttf'), 14)
 
 
 class Eink(Observer):
@@ -27,14 +27,19 @@ class Eink(Observer):
         logging.info("Initializing display")
 
         epd = epd5in83b_V2.EPD()
+        logging.info("init and Clear")
         epd.init()
         epd.Clear()
+        logging.info("init and Clear finished")
         return epd
 
     def update(self, data):
+        logging.info("Updating screen")
         self.form_image(data, self.screen_draw, self.screen_image)
+
+        logging.info("Formed image")
         screen_image_rotated = self.screen_image.rotate(180)
-        self.epd.display(self.epd.getbuffer(screen_image_rotated))
+        self.epd.display(self.epd.getbuffer(screen_image_rotated), None)
 
     def close(self):
         epd5in83b_V2.epdconfig.module_exit()
