@@ -51,7 +51,7 @@ class Eink(Observer):
             return
 
         map = self.generate_map(regions)
-        image.paste(map, (self.edp.width - 182, 0))
+        image.paste(map, (self.epd.width - 182, 0))
         self.text(screen_draw)
         self.legend(image, pos, regions, screen_draw)
 
