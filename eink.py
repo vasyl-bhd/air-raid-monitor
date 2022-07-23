@@ -21,8 +21,8 @@ class Eink(Observer):
     def __init__(self, observable):
         super().__init__(observable=observable)
         self.epd = self.init_display()
-        self.epd_middle_width = self.epd.width / 2
-        self.epd_middle_height = self.epd.height / 2
+        self.epd_middle_width = self.epd.width // 2
+        self.epd_middle_height = self.epd.height // 2
         self.screen_image_bw = Image.new('1', (self.epd.width, self.epd.height), 255)
         self.screen_image_red = Image.new('1', (self.epd.width, self.epd.height), 255)
         self.screen_draw_bw = ImageDraw.Draw(self.screen_image_bw)
