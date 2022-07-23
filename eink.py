@@ -83,15 +83,15 @@ class Eink(Observer):
         counter = Counter(regions.values())
 
         self.screen_draw_red.rounded_rectangle(pos(1, 74), 3, fill=0)
-        self.screen_draw_bw.text((20, 76), "full - %d" % counter['full'], font=FONT_SMALL)
+        self.screen_draw_bw.text((20, self.epd_middle_height + 76), "full - %d" % counter['full'], font=FONT_SMALL)
 
         tmp = Image.new('RGB', (15, 15), "#FFFFFF")
         ImageDraw.Draw(tmp).rounded_rectangle(pos(0, 0), 3, fill="#FF0000", outline="#000000")
         tmp = tmp.convert('1', dither=True)
-        self.screen_image_bw.paste(tmp, (1, 90))
+        self.screen_image_bw.paste(tmp, (1, self.epd_middle_height + 90))
         self.screen_draw_bw.text((20, 92), "partial - %d" % counter['partial'], font=FONT_SMALL)
 
-        self.screen_draw_bw.rounded_rectangle(pos(1, 106), 3, fill="#FFFFFF", outline="#000000")
+        self.screen_draw_bw.rounded_rectangle(pos(1, self.epd_middle_height + 106), 3, fill="#FFFFFF", outline="#000000")
         self.screen_draw_bw.text((20, 108), "nothing - %d" % counter[None], font=FONT_SMALL)
 
     def draw_text(self):
