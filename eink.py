@@ -48,7 +48,7 @@ class Eink(Observer):
 
         logging.info("Formed image")
         screen_image_rotated = self.screen_image_bw.rotate(180)
-        self.epd.display(self.epd.getbuffer(screen_image_rotated))
+        self.epd.display(self.epd.getbuffer(screen_image_rotated), None)
 
     def close(self):
         epd5in83b_V2.epdconfig.module_exit()
