@@ -80,7 +80,7 @@ class Eink(Observer):
         counter = Counter(regions.values())
         legend_full_stats_height = self.epd_middle_height + 54
         legend_partial_stats_height = self.epd_middle_height + 70
-        legend_no_data_stats_height = self.epd_middle_height + 96
+        legend_no_data_stats_height = self.epd_middle_height + 86
 
         def pos(coords):
             x, y = coords
@@ -111,6 +111,8 @@ class Eink(Observer):
         self.screen_draw_bw.text((16, self.epd_middle_height + 150), "Air raid", font=FONT_SMALL)
         self.screen_draw_bw.text((12, self.epd_middle_height + 166), "sirens in", font=FONT_SMALL)
         self.screen_draw_bw.text((12, self.epd_middle_height + 182), " Ukraine", font=FONT_SMALL)
+
+        self.screen_draw_bw.text((self.epd_middle_width + 100, self.epd_middle_height + 182), "I <3 Ann", font=FONT_SMALL)
 
     def connection_lost_text(self):
         self.screen_draw_bw.text((self.epd.width / 2, self.epd.width / 2), 'NO CONNECTION', font=FONT_SMALL)
