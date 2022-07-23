@@ -11,16 +11,18 @@ from waveshare_epd import epd5in83b_V2
 import logging
 
 FONT_SMALL = ImageFont.truetype(
-    os.path.join(os.path.dirname(__file__), 'Monaco.ttf'), 14)
+    os.path.join(os.path.dirname(__file__), 'Monaco.ttf'), 18)
 
+MAP_SIZE = (500, 350)
 
 class Eink(Observer):
 
     def __init__(self, observable):
         super().__init__(observable=observable)
         self.epd = self._init_display()
-        self.screen_image = Image.new('1', (self.epd.width, self.epd.height), 255)
-        self.screen_draw = ImageDraw.Draw(self.screen_image)
+        self.screen_image_bw = Image.new('1', (self.epd.width, self.epd.height), 255)
+        self.screen_image_red = Image.new('1', (self.epd.width, self.epd.height), 255)
+        self.screen_draw = ImageDraw.Draw(self.screen_image_bw)
 
     @staticmethod
     def _init_display():
@@ -35,11 +37,11 @@ class Eink(Observer):
 
     def update(self, data):
         logging.info("Updating screen")
-        self.form_image(data, self.screen_draw, self.screen_image)
+        self.form_image(data, self.screen_draw, self.screen_image_bw)
 
         logging.info("Formed image")
-        screen_image_rotated = self.screen_image.rotate(180)
-        self.epd.display(self.epd.getbuffer(screen_image_rotated), None)
+        screen_image_rotated = self.screen_image_bw.rotate(180)
+        self.epd.display(self.epd.getbuffer(screen_image_rotated), self.epd.getbuffer(screen_image_rotated))
 
     def close(self):
         epd5in83b_V2.epdconfig.module_exit()
@@ -56,7 +58,7 @@ class Eink(Observer):
             return
 
         map = self.generate_map(regions)
-        image.paste(map, (self.epd.width - 182, 0))
+        image.paste(map, (self.epd.width - MAP_SIZE[0], 0))
         self.text(screen_draw)
         self.legend(image, pos, regions, screen_draw)
 
@@ -73,12 +75,12 @@ class Eink(Observer):
         screen_draw.text((20, 76), "full - %d" % counter['full'], font=FONT_SMALL)
 
     def text(self, screen_draw):
-        screen_draw.text((6, 4), "Air raid", font=FONT_SMALL)
-        screen_draw.text((2, 16), "sirens in", font=FONT_SMALL)
-        screen_draw.text((2, 28), " Ukraine", font=FONT_SMALL)
+        screen_draw.text((16, 4), "Air raid", font=FONT_SMALL)
+        screen_draw.text((12, 16), "sirens in", font=FONT_SMALL)
+        screen_draw.text((12, 28), " Ukraine", font=FONT_SMALL)
 
     def connection_lost_text(self, screen_draw):
-        screen_draw.text((79, 56), 'NO CONNECTION', font=FONT_SMALL)
+        screen_draw.text((self.epd.width / 2, self.epd.width / 2), 'NO CONNECTION', font=FONT_SMALL)
 
     @staticmethod
     def render_svg(_svg, _scale):
@@ -99,7 +101,7 @@ class Eink(Observer):
         xmlstr = ET.tostring(tree.getroot(), encoding='utf8', method='xml').decode("utf-8")
         img = Eink.render_svg(xmlstr, 1)
         img = img.convert('1', dither=True)
-        img = img.resize((182, 122))
+        img = img.resize(MAP_SIZE)
         return img
 
     def show_all(self):
