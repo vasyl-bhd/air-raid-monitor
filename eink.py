@@ -51,7 +51,8 @@ class Eink(Observer):
 
         logging.info("Formed image")
         screen_image_rotated = self.screen_image_bw.rotate(180)
-        self.epd.display(self.epd.getbuffer(screen_image_rotated), self.epd.getbuffer(self.screen_image_red))
+        screen_image_red_rotated = self.screen_image_red.rotate(180)
+        self.epd.display(self.epd.getbuffer(screen_image_rotated), self.epd.getbuffer(screen_image_red_rotated))
 
     @staticmethod
     def close():
@@ -91,8 +92,8 @@ class Eink(Observer):
 
     def draw_text(self):
         self.screen_draw_bw.text((16, self.epd_middle_height + 104), "Air raid", font=FONT_SMALL)
-        self.screen_draw_bw.text((12, self.epd_middle_height + 116), "sirens in", font=FONT_SMALL)
-        self.screen_draw_bw.text((12, self.epd_middle_height + 128), " Ukraine", font=FONT_SMALL)
+        self.screen_draw_bw.text((12, self.epd_middle_height + 120), "sirens in", font=FONT_SMALL)
+        self.screen_draw_bw.text((12, self.epd_middle_height + 136), " Ukraine", font=FONT_SMALL)
 
     def connection_lost_text(self):
         self.screen_draw_bw.text((self.epd.width / 2, self.epd.width / 2), 'NO CONNECTION', font=FONT_SMALL)
