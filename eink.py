@@ -82,9 +82,9 @@ class Eink(Observer):
         screen_draw.text((20, 76), "full - %d" % counter['full'], font=FONT_SMALL)
 
     def text(self, screen_draw):
-        screen_draw.text((16, 4), "Air raid", font=FONT_SMALL)
-        screen_draw.text((12, 16), "sirens in", font=FONT_SMALL)
-        screen_draw.text((12, 28), " Ukraine", font=FONT_SMALL)
+        screen_draw.text((16, self.epd.height - 50), "Air raid", font=FONT_SMALL)
+        screen_draw.text((12, self.epd.height - 40), "sirens in", font=FONT_SMALL)
+        screen_draw.text((12, self.epd.height - 30), " Ukraine", font=FONT_SMALL)
 
     def connection_lost_text(self, screen_draw):
         screen_draw.text((self.epd.width / 2, self.epd.width / 2), 'NO CONNECTION', font=FONT_SMALL)
