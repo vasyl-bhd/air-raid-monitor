@@ -18,11 +18,11 @@ class MapGenerator:
         for region in self.regions:
             elements = self.svg.findall(f'.//*[@name="{region}"]')
             for element in elements:
-                if self.red_svg[region] == "full":
+                if self.regions[region] == "full":
                     element.set("fill", "#FF0000")
-                elif self.svg[region] == "partial":
+                elif self.regions[region] == "partial":
                     element.set("fill", "#000000")
-                elif self.svg[region] == "no_data":
+                elif self.regions[region] == "no_data":
                     element.set("fill", "#AA0000")
         bw_xmlstr = ET.tostring(self.svg.getroot(), encoding='utf8', method='xml').decode("utf-8")
         red_xmlstr = ET.tostring(self.red_svg.getroot(), encoding='utf8', method='xml').decode("utf-8")
