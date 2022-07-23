@@ -43,7 +43,7 @@ def main_cycle(observable):
             logging.info("ctrl + c:")
             logging.info("clearing display")
             Eink.init_display()
-            epd5in83b_V2.epdconfig.module_exit()
+            Eink.close()
             exit()
         finally:
             if timeout_count >= 3:

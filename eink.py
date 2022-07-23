@@ -25,11 +25,11 @@ class Eink(Observer):
         self.epd_middle_height = self.epd.height / 2
         self.screen_image_bw = Image.new('1', (self.epd.width, self.epd.height), 255)
         self.screen_image_red = Image.new('1', (self.epd.width, self.epd.height), 255)
-        self.screen_draw = ImageDraw.Draw(self.screen_image_bw)
+        self.screen_draw_bw = ImageDraw.Draw(self.screen_image_bw)
 
     @staticmethod
     def clear_display(epd=None):
-        if epd == None:
+        if epd is None:
             epd = epd5in83b_V2.EPD()
         epd.Clear()
 
@@ -46,50 +46,54 @@ class Eink(Observer):
 
     def update(self, data):
         logging.info("Updating screen")
-        self.form_image(data, self.screen_draw, self.screen_image_bw)
+        self.form_image(data)
 
         logging.info("Formed image")
         screen_image_rotated = self.screen_image_bw.rotate(180)
         self.epd.display(self.epd.getbuffer(screen_image_rotated), None)
 
-    def close(self):
+    @staticmethod
+    def close():
         epd5in83b_V2.epdconfig.module_exit()
 
-    def form_image(self, regions, screen_draw, imagebw):
+    def form_image(self, regions):
         def pos(x, y):
             side = 14
             return [(x, y), (x + side, y + side)]
 
-        screen_draw.rectangle((0, 0, self.epd.width, self.epd.height), fill="#ffffff")
+        self.screen_draw_bw.rectangle((0, 0, self.epd.width, self.epd.height), fill="#ffffff")
 
         if not regions:
-            self.connection_lost_text(screen_draw)
+            self.connection_lost_text()
             return
 
         map = self.generate_map(regions)
-        imagebw.paste(map, (self.epd.width - MAP_SIZE[0], 0))
-        self.text(screen_draw)
-        self.legend(imagebw, pos, regions, screen_draw)
+        self.screen_image_bw.paste(map, (self.epd.width - MAP_SIZE[0], 0))
+        self.draw_text()
+        self.legend(pos, regions)
 
-    def legend(self, image, pos, regions, screen_draw):
+    def legend(self, pos, regions):
+        counter = Counter(regions.values())
+
+        self.screen_draw_bw.rounded_rectangle(pos(1, 74), 3, fill="#000000")
+        self.screen_draw_bw.text((20, 76), "full - %d" % counter['full'], font=FONT_SMALL)
+
         tmp = Image.new('RGB', (15, 15), "#FFFFFF")
         ImageDraw.Draw(tmp).rounded_rectangle(pos(0, 0), 3, fill="#FF0000", outline="#000000")
         tmp = tmp.convert('1', dither=True)
-        counter = Counter(regions.values())
-        screen_draw.rounded_rectangle(pos(1, 106), 3, fill="#FFFFFF", outline="#000000")
-        screen_draw.text((20, 108), "nothing - %d" % counter[None], font=FONT_SMALL)
-        image.paste(tmp, (1, 90))
-        screen_draw.text((20, 92), "partial - %d" % counter['partial'], font=FONT_SMALL)
-        screen_draw.rounded_rectangle(pos(1, 74), 3, fill="#000000")
-        screen_draw.text((20, 76), "full - %d" % counter['full'], font=FONT_SMALL)
+        self.screen_image_bw.paste(tmp, (1, 90))
+        self.screen_draw_bw.text((20, 92), "partial - %d" % counter['partial'], font=FONT_SMALL)
 
-    def text(self, screen_draw):
-        screen_draw.text((16, self.epd_middle_height + 104), "Air raid", font=FONT_SMALL)
-        screen_draw.text((12, self.epd_middle_height + 116), "sirens in", font=FONT_SMALL)
-        screen_draw.text((12, self.epd_middle_height + 128), " Ukraine", font=FONT_SMALL)
+        self.screen_draw_bw.rounded_rectangle(pos(1, 106), 3, fill="#FFFFFF", outline="#000000")
+        self.screen_draw_bw.text((20, 108), "nothing - %d" % counter[None], font=FONT_SMALL)
 
-    def connection_lost_text(self, screen_draw):
-        screen_draw.text((self.epd.width / 2, self.epd.width / 2), 'NO CONNECTION', font=FONT_SMALL)
+    def draw_text(self):
+        self.screen_draw_bw.text((16, self.epd_middle_height + 104), "Air raid", font=FONT_SMALL)
+        self.screen_draw_bw.text((12, self.epd_middle_height + 116), "sirens in", font=FONT_SMALL)
+        self.screen_draw_bw.text((12, self.epd_middle_height + 128), " Ukraine", font=FONT_SMALL)
+
+    def connection_lost_text(self):
+        self.screen_draw_bw.text((self.epd.width / 2, self.epd.width / 2), 'NO CONNECTION', font=FONT_SMALL)
 
     @staticmethod
     def render_svg(_svg, _scale):
