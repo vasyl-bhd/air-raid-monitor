@@ -42,6 +42,7 @@ class MapGenerator:
                     element.set("fill", "#000000")
                 element.set("stroke-opacity", "0")
                 element.set("stroke-width", "0")
+                element.set("stroke", "#FFFFFF")
 
     def form_map_image(self, svg):
         xmlstr = ET.tostring(svg.getroot(), encoding='utf8', method='xml').decode("utf-8")
