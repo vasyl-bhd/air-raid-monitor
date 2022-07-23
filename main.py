@@ -1,11 +1,11 @@
 import json
+import logging
 import time
 from urllib.error import HTTPError, URLError
 from urllib.request import urlopen
+
 from eink import Eink
 from observer import Observable
-from waveshare_epd import epd5in83b_V2
-import logging
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -27,7 +27,6 @@ def main():
     except KeyboardInterrupt:
         observable.close()
         exit()
-
 
 
 def main_cycle(observable):

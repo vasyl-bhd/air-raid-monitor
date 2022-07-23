@@ -10,7 +10,6 @@ from svglib.svglib import svg2rlg
 class MapGenerator:
     def __init__(self, regions, map_size):
         self.svg = ET.parse(os.path.join(os.path.dirname(__file__), 'ua.svg'))
-        self.red_svg = deepcopy(self.svg)
         self.regions = regions
         self.size = map_size
 
@@ -25,16 +24,11 @@ class MapGenerator:
                 elif self.regions[region] == "no_data":
                     element.set("fill", "#AA0000")
         bw_xmlstr = ET.tostring(self.svg.getroot(), encoding='utf8', method='xml').decode("utf-8")
-        red_xmlstr = ET.tostring(self.red_svg.getroot(), encoding='utf8', method='xml').decode("utf-8")
         img_bw = self.render_svg(bw_xmlstr, 1)
         img_bw = img_bw.convert('1', dither=True)
         img_bw = img_bw.resize(self.size)
 
-        img_red = self.render_svg(red_xmlstr, 1)
-        img_red = img_red.convert('1', dither=True)
-        img_red = img_red.resize(self.size)
-
-        return img_bw, img_red
+        return img_bw
 
     @staticmethod
     def render_svg(_svg, _scale):
