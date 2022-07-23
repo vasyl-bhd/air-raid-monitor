@@ -20,7 +20,9 @@ class Eink(Observer):
 
     def __init__(self, observable):
         super().__init__(observable=observable)
-        self.epd = self._init_display()
+        self.epd = self.init_display()
+        self.epd_middle_width = self.epd.width / 2
+        self.epd_middle_height = self.epd.height / 2
         self.screen_image_bw = Image.new('1', (self.epd.width, self.epd.height), 255)
         self.screen_image_red = Image.new('1', (self.epd.width, self.epd.height), 255)
         self.screen_draw = ImageDraw.Draw(self.screen_image_bw)
@@ -32,7 +34,7 @@ class Eink(Observer):
         epd.Clear()
 
     @staticmethod
-    def _init_display():
+    def init_display():
         logging.info("Initializing display")
 
         epd = epd5in83b_V2.EPD()
@@ -53,7 +55,7 @@ class Eink(Observer):
     def close(self):
         epd5in83b_V2.epdconfig.module_exit()
 
-    def form_image(self, regions, screen_draw, image):
+    def form_image(self, regions, screen_draw, imagebw):
         def pos(x, y):
             side = 14
             return [(x, y), (x + side, y + side)]
@@ -65,9 +67,9 @@ class Eink(Observer):
             return
 
         map = self.generate_map(regions)
-        image.paste(map, (self.epd.width - MAP_SIZE[0], 0))
+        imagebw.paste(map, (self.epd.width - MAP_SIZE[0], 0))
         self.text(screen_draw)
-        self.legend(image, pos, regions, screen_draw)
+        self.legend(imagebw, pos, regions, screen_draw)
 
     def legend(self, image, pos, regions, screen_draw):
         tmp = Image.new('RGB', (15, 15), "#FFFFFF")
@@ -82,9 +84,9 @@ class Eink(Observer):
         screen_draw.text((20, 76), "full - %d" % counter['full'], font=FONT_SMALL)
 
     def text(self, screen_draw):
-        screen_draw.text((16, self.epd.height / 2 + 104), "Air raid", font=FONT_SMALL)
-        screen_draw.text((12, self.epd.height / 2 + 116), "sirens in", font=FONT_SMALL)
-        screen_draw.text((12, self.epd.height / 2 + 128), " Ukraine", font=FONT_SMALL)
+        screen_draw.text((16, self.epd_middle_height + 104), "Air raid", font=FONT_SMALL)
+        screen_draw.text((12, self.epd_middle_height + 116), "sirens in", font=FONT_SMALL)
+        screen_draw.text((12, self.epd_middle_height + 128), " Ukraine", font=FONT_SMALL)
 
     def connection_lost_text(self, screen_draw):
         screen_draw.text((self.epd.width / 2, self.epd.width / 2), 'NO CONNECTION', font=FONT_SMALL)

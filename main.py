@@ -42,7 +42,7 @@ def main_cycle(observable):
         except KeyboardInterrupt:
             logging.info("ctrl + c:")
             logging.info("clearing display")
-            Eink.clear_display()
+            Eink.init_display()
             epd5in83b_V2.epdconfig.module_exit()
             exit()
         finally:
