@@ -72,7 +72,8 @@ class Eink(Observer):
 
         map = MapGenerator(regions=regions, map_size=MAP_SIZE).generate_map()
 
-        self.screen_image_bw.paste(map, (self.epd.width - MAP_SIZE[0], 0))
+        self.screen_image_bw.paste(map[0], (self.epd.width - MAP_SIZE[0], 0))
+        self.screen_image_red.paste(map[1], (self.epd.width - MAP_SIZE[0], 0))
         self.draw_text()
         self.legend(pos, regions)
 

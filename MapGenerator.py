@@ -10,25 +10,43 @@ from svglib.svglib import svg2rlg
 class MapGenerator:
     def __init__(self, regions, map_size):
         self.svg = ET.parse(os.path.join(os.path.dirname(__file__), 'ua.svg'))
+        self.svg_red = deepcopy(self.svg)
         self.regions = regions
         self.size = map_size
 
     def generate_map(self):
+        self.fill_bw_map()
+        self.fill_red_map()
+
+        img_bw = self.form_map_image(self.svg)
+        img_red = self.form_map_image(self.svg_red)
+
+        return img_bw, img_red
+
+    def fill_bw_map(self):
         for region in self.regions:
             elements = self.svg.findall(f'.//*[@name="{region}"]')
             for element in elements:
-                if self.regions[region] == "full":
+                if self.regions[region] == "partial":
                     element.set("fill", "#FF0000")
-                elif self.regions[region] == "partial":
-                    element.set("fill", "#000000")
                 elif self.regions[region] == "no_data":
                     element.set("fill", "#AA0000")
-        bw_xmlstr = ET.tostring(self.svg.getroot(), encoding='utf8', method='xml').decode("utf-8")
-        img_bw = self.render_svg(bw_xmlstr, 1)
-        img_bw = img_bw.convert('1', dither=True)
-        img_bw = img_bw.resize(self.size)
 
-        return img_bw
+    def fill_red_map(self):
+        for region in self.regions:
+            elements = self.svg_red.findall(f'.//*[@name="{region}"]')
+            for element in elements:
+                if self.regions[region] == "full":
+                    element.set("fill", "#000000")
+                element.set("stroke-opacity", "0")
+
+    def form_map_image(self, svg):
+        xmlstr = ET.tostring(svg.getroot(), encoding='utf8', method='xml').decode("utf-8")
+        img = self.render_svg(xmlstr, 1)\
+            .convert('1', dither=True)\
+            .resize(self.size)
+
+        return img
 
     @staticmethod
     def render_svg(_svg, _scale):
