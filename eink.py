@@ -26,6 +26,7 @@ class Eink(Observer):
         self.screen_image_bw = Image.new('1', (self.epd.width, self.epd.height), 255)
         self.screen_image_red = Image.new('1', (self.epd.width, self.epd.height), 255)
         self.screen_draw_bw = ImageDraw.Draw(self.screen_image_bw)
+        self.screen_draw_red = ImageDraw.Draw(self.screen_image_red)
 
     @staticmethod
     def clear_display(epd=None):
@@ -67,7 +68,7 @@ class Eink(Observer):
             self.connection_lost_text()
             return
 
-        map = self.generate_map(regions)
+        map = self._generate_map(regions)
         self.screen_image_bw.paste(map, (self.epd.width - MAP_SIZE[0], 0))
         self.draw_text()
         self.legend(pos, regions)
@@ -75,11 +76,11 @@ class Eink(Observer):
     def legend(self, pos, regions):
         counter = Counter(regions.values())
 
-        self.screen_draw_bw.rounded_rectangle(pos(1, 74), 3, fill="#000000")
+        self.screen_draw_red.rounded_rectangle(pos(1, 74), 3, fill="#FF0000", outline="#000000")
         self.screen_draw_bw.text((20, 76), "full - %d" % counter['full'], font=FONT_SMALL)
 
         tmp = Image.new('RGB', (15, 15), "#FFFFFF")
-        ImageDraw.Draw(tmp).rounded_rectangle(pos(0, 0), 3, fill="#FF0000", outline="#000000")
+        ImageDraw.Draw(tmp).rounded_rectangle(pos(0, 0), 3, fill="#000000", outline="#000000")
         tmp = tmp.convert('1', dither=True)
         self.screen_image_bw.paste(tmp, (1, 90))
         self.screen_draw_bw.text((20, 92), "partial - %d" % counter['partial'], font=FONT_SMALL)
@@ -100,7 +101,8 @@ class Eink(Observer):
         drawing = svg2rlg(io.BytesIO(bytes(_svg, 'utf-8')))
         return renderPM.drawToPIL(drawing)
 
-    def generate_map(self, regions):
+    @staticmethod
+    def _generate_map(regions):
         tree = ET.parse(os.path.join(os.path.dirname(__file__), 'ua.svg'))
         for region in regions:
             elements = tree.findall(f'.//*[@name="{region}"]')
