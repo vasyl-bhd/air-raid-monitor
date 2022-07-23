@@ -1,11 +1,11 @@
 import os
 import xml.etree.ElementTree as ET
-import io
+
 from collections import Counter
 
-from svglib.svglib import svg2rlg
-from reportlab.graphics import renderPM
 from PIL import Image, ImageDraw, ImageFont
+
+from MapGenerator import MapGenerator
 from observer import Observer
 from waveshare_epd import epd5in83b_V2
 import logging
@@ -70,8 +70,10 @@ class Eink(Observer):
             self.connection_lost_text()
             return
 
-        map = self._generate_map(regions)
-        self.screen_image_bw.paste(map, (self.epd.width - MAP_SIZE[0], 0))
+        map = MapGenerator(regions=regions, map_size=MAP_SIZE)
+
+        self.screen_image_bw.paste(map[0], (self.epd.width - MAP_SIZE[0], 0))
+        self.screen_image_red.paste(map[1], (self.epd.width - MAP_SIZE[0], 0))
         self.draw_text()
         self.legend(pos, regions)
 
@@ -82,7 +84,7 @@ class Eink(Observer):
         self.screen_draw_bw.text((20, 76), "full - %d" % counter['full'], font=FONT_SMALL)
 
         tmp = Image.new('RGB', (15, 15), "#FFFFFF")
-        ImageDraw.Draw(tmp).rounded_rectangle(pos(0, 0), 3, fill="#000000", outline="#000000")
+        ImageDraw.Draw(tmp).rounded_rectangle(pos(0, 0), 3, fill="#AA0000", outline="#000000")
         tmp = tmp.convert('1', dither=True)
         self.screen_image_bw.paste(tmp, (1, 90))
         self.screen_draw_bw.text((20, 92), "partial - %d" % counter['partial'], font=FONT_SMALL)
@@ -97,29 +99,6 @@ class Eink(Observer):
 
     def connection_lost_text(self):
         self.screen_draw_bw.text((self.epd.width / 2, self.epd.width / 2), 'NO CONNECTION', font=FONT_SMALL)
-
-    @staticmethod
-    def render_svg(_svg, _scale):
-        drawing = svg2rlg(io.BytesIO(bytes(_svg, 'utf-8')))
-        return renderPM.drawToPIL(drawing)
-
-    @staticmethod
-    def _generate_map(regions):
-        tree = ET.parse(os.path.join(os.path.dirname(__file__), 'ua.svg'))
-        for region in regions:
-            elements = tree.findall(f'.//*[@name="{region}"]')
-            for element in elements:
-                if regions[region] == "full":
-                    element.set("fill", "#000000")
-                elif regions[region] == "partial":
-                    element.set("fill", "#FF0000")
-                elif regions[region] == "no_data":
-                    element.set("fill", "#AA0000")
-        xmlstr = ET.tostring(tree.getroot(), encoding='utf8', method='xml').decode("utf-8")
-        img = Eink.render_svg(xmlstr, 1)
-        img = img.convert('1', dither=True)
-        img = img.resize(MAP_SIZE)
-        return img
 
     def show_all(self):
         elements = self.tree.findall(".//*[@name]")
