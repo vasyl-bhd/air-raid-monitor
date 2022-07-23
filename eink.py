@@ -15,6 +15,7 @@ FONT_SMALL = ImageFont.truetype(
 
 MAP_SIZE = (500, 350)
 
+
 class Eink(Observer):
 
     def __init__(self, observable):
@@ -25,13 +26,19 @@ class Eink(Observer):
         self.screen_draw = ImageDraw.Draw(self.screen_image_bw)
 
     @staticmethod
+    def clear_display(epd=None):
+        if epd == None:
+            epd = epd5in83b_V2.EPD()
+        epd.Clear()
+
+    @staticmethod
     def _init_display():
         logging.info("Initializing display")
 
         epd = epd5in83b_V2.EPD()
         logging.info("init and Clear")
         epd.init()
-        epd.Clear()
+        Eink.clear_display(epd)
         logging.info("init and Clear finished")
         return epd
 
@@ -41,7 +48,7 @@ class Eink(Observer):
 
         logging.info("Formed image")
         screen_image_rotated = self.screen_image_bw.rotate(180)
-        self.epd.display(self.epd.getbuffer(screen_image_rotated), self.epd.getbuffer(screen_image_rotated))
+        self.epd.display(self.epd.getbuffer(screen_image_rotated))
 
     def close(self):
         epd5in83b_V2.epdconfig.module_exit()

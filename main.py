@@ -42,6 +42,7 @@ def main_cycle(observable):
         except KeyboardInterrupt:
             logging.info("ctrl + c:")
             epd5in83b_V2.epdconfig.module_exit()
+            Eink.clear_display()
             exit()
         finally:
             if timeout_count >= 3:
