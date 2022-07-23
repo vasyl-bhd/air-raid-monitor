@@ -81,23 +81,32 @@ class Eink(Observer):
 
     def legend(self, pos, regions):
         counter = Counter(regions.values())
+        legend_full_stats_height = self.epd_middle_height + 104
+        legend_partial_stats_height = self.epd_middle_height + 120
+        legend_no_data_stats_height = self.epd_middle_height + 136
 
-        self.screen_draw_red.rounded_rectangle(pos(1, 74), 3, fill=0)
-        self.screen_draw_bw.text((20, self.epd_middle_height + 76), "full - %d" % counter['full'], font=FONT_SMALL)
+        def icon_pos(height):
+            return pos(1, height)
+
+        def text_pos(height):
+            return pos(20, height)
+
+        self.screen_draw_red.rounded_rectangle(icon_pos(legend_full_stats_height), 3, fill=0)
+        self.screen_draw_bw.text(text_pos(legend_full_stats_height), "full - %d" % counter['full'], font=FONT_SMALL)
 
         tmp = Image.new('RGB', (15, 15), "#FFFFFF")
         ImageDraw.Draw(tmp).rounded_rectangle(pos(0, 0), 3, fill="#FF0000", outline="#000000")
         tmp = tmp.convert('1', dither=True)
-        self.screen_image_bw.paste(tmp, (1, self.epd_middle_height + 90))
-        self.screen_draw_bw.text((20, 92), "partial - %d" % counter['partial'], font=FONT_SMALL)
+        self.screen_image_bw.paste(tmp, icon_pos(legend_partial_stats_height))
+        self.screen_draw_bw.text(text_pos(legend_partial_stats_height), "partial - %d" % counter['partial'], font=FONT_SMALL)
 
-        self.screen_draw_bw.rounded_rectangle(pos(1, self.epd_middle_height + 106), 3, fill="#FFFFFF", outline="#000000")
-        self.screen_draw_bw.text((20, 108), "nothing - %d" % counter[None], font=FONT_SMALL)
+        self.screen_draw_bw.rounded_rectangle(icon_pos(legend_no_data_stats_height), 3, fill="#FFFFFF", outline="#000000")
+        self.screen_draw_bw.text(text_pos(legend_no_data_stats_height), "nothing - %d" % counter[None], font=FONT_SMALL)
 
     def draw_text(self):
-        self.screen_draw_bw.text((16, self.epd_middle_height + 104), "Air raid", font=FONT_SMALL)
-        self.screen_draw_bw.text((12, self.epd_middle_height + 120), "sirens in", font=FONT_SMALL)
-        self.screen_draw_bw.text((12, self.epd_middle_height + 136), " Ukraine", font=FONT_SMALL)
+        self.screen_draw_bw.text((16, self.epd_middle_height + 150), "Air raid", font=FONT_SMALL)
+        self.screen_draw_bw.text((12, self.epd_middle_height + 166), "sirens in", font=FONT_SMALL)
+        self.screen_draw_bw.text((12, self.epd_middle_height + 182), " Ukraine", font=FONT_SMALL)
 
     def connection_lost_text(self):
         self.screen_draw_bw.text((self.epd.width / 2, self.epd.width / 2), 'NO CONNECTION', font=FONT_SMALL)
