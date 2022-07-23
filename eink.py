@@ -108,9 +108,9 @@ class Eink(Observer):
         self.screen_draw_bw.text(text_pos(legend_no_data_stats_height), "nothing - %d" % counter[None], font=FONT_SMALL)
 
     def draw_text(self):
-        self.screen_draw_bw.text((16, 74), "Air raid", font=FONT_SMALL)
-        self.screen_draw_bw.text((12, 90), "sirens in", font=FONT_SMALL)
-        self.screen_draw_bw.text((12, 106), " Ukraine", font=FONT_SMALL)
+        self.screen_draw_bw.text((16, 50), "Air raid", font=FONT_SMALL)
+        self.screen_draw_bw.text((12, 66), "sirens in", font=FONT_SMALL)
+        self.screen_draw_bw.text((12, 82), " Ukraine", font=FONT_SMALL)
 
         self.screen_draw_bw.text((self.epd_middle_width + 100, self.epd_middle_height + 182), "I <3 Ann", font=FONT_SMALL)
 
