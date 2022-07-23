@@ -11,6 +11,7 @@ logging.basicConfig(level=logging.DEBUG)
 
 
 def get_state():
+    logging.info("Fetching state...")
     with urlopen('https://sirens.in.ua/api/v1/', timeout=10) as response:
         data = response.read()
         return json.loads(data)
