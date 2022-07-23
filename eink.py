@@ -62,9 +62,6 @@ class Eink(Observer):
         epd5in83b_V2.epdconfig.module_exit()
 
     def form_image(self, regions):
-        def pos(x, y):
-            side = 14
-            return [(x, y), (x + side, y + side)]
 
         self.screen_draw_bw.rectangle((0, 0, self.epd.width, self.epd.height), fill="#ffffff")
 
@@ -77,7 +74,7 @@ class Eink(Observer):
         self.screen_image_bw.paste(air_raid_map[0], (self.epd.width - MAP_SIZE[0], 0))
         self.screen_image_red.paste(air_raid_map[1], (self.epd.width - MAP_SIZE[0], 0))
         self.draw_text()
-        self.legend(pos, regions)
+        self.legend(regions)
 
     def legend(self, pos, regions):
         counter = Counter(regions.values())
@@ -85,13 +82,17 @@ class Eink(Observer):
         legend_partial_stats_height = self.epd_middle_height + 120
         legend_no_data_stats_height = self.epd_middle_height + 136
 
+        def pos(x, y):
+            side = 14
+            return [(x, y), (x + side, y + side)]
+
         def icon_pos(height):
-            return pos(1, height)
+            return 1, height
 
         def text_pos(height):
-            return pos(20, height)
+            return 20, height
 
-        self.screen_draw_red.rounded_rectangle(icon_pos(legend_full_stats_height), 3, fill=0)
+        self.screen_draw_red.rounded_rectangle(pos(icon_pos(legend_full_stats_height)), 3, fill=0)
         self.screen_draw_bw.text(text_pos(legend_full_stats_height), "full - %d" % counter['full'], font=FONT_SMALL)
 
         tmp = Image.new('RGB', (15, 15), "#FFFFFF")
@@ -100,7 +101,7 @@ class Eink(Observer):
         self.screen_image_bw.paste(tmp, icon_pos(legend_partial_stats_height))
         self.screen_draw_bw.text(text_pos(legend_partial_stats_height), "partial - %d" % counter['partial'], font=FONT_SMALL)
 
-        self.screen_draw_bw.rounded_rectangle(icon_pos(legend_no_data_stats_height), 3, fill="#FFFFFF", outline="#000000")
+        self.screen_draw_bw.rounded_rectangle(pos(icon_pos(legend_no_data_stats_height)), 3, fill="#FFFFFF", outline="#000000")
         self.screen_draw_bw.text(text_pos(legend_no_data_stats_height), "nothing - %d" % counter[None], font=FONT_SMALL)
 
     def draw_text(self):
