@@ -77,7 +77,7 @@ class Eink(Observer):
     def legend(self, pos, regions):
         counter = Counter(regions.values())
 
-        self.screen_draw_red.rounded_rectangle(pos(1, 74), 3, fill=0)
+        self.screen_draw_red.rounded_rectangle(pos(1, 74), fill=0)
         self.screen_draw_bw.text((20, 76), "full - %d" % counter['full'], font=FONT_SMALL)
 
         tmp = Image.new('RGB', (15, 15), "#FFFFFF")
