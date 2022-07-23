@@ -82,7 +82,8 @@ class Eink(Observer):
         legend_partial_stats_height = self.epd_middle_height + 120
         legend_no_data_stats_height = self.epd_middle_height + 136
 
-        def pos(x, y):
+        def pos(coords):
+            x, y = coords
             side = 14
             return [(x, y), (x + side, y + side)]
 
@@ -99,9 +100,11 @@ class Eink(Observer):
         ImageDraw.Draw(tmp).rounded_rectangle(pos(0, 0), 3, fill="#FF0000", outline="#000000")
         tmp = tmp.convert('1', dither=True)
         self.screen_image_bw.paste(tmp, icon_pos(legend_partial_stats_height))
-        self.screen_draw_bw.text(text_pos(legend_partial_stats_height), "partial - %d" % counter['partial'], font=FONT_SMALL)
+        self.screen_draw_bw.text(text_pos(legend_partial_stats_height), "partial - %d" % counter['partial'],
+                                 font=FONT_SMALL)
 
-        self.screen_draw_bw.rounded_rectangle(pos(icon_pos(legend_no_data_stats_height)), 3, fill="#FFFFFF", outline="#000000")
+        self.screen_draw_bw.rounded_rectangle(pos(icon_pos(legend_no_data_stats_height)), 3, fill="#FFFFFF",
+                                              outline="#000000")
         self.screen_draw_bw.text(text_pos(legend_no_data_stats_height), "nothing - %d" % counter[None], font=FONT_SMALL)
 
     def draw_text(self):
