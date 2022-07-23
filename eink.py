@@ -78,9 +78,9 @@ class Eink(Observer):
 
     def legend(self, regions):
         counter = Counter(regions.values())
-        legend_full_stats_height = self.epd_middle_height + 104
-        legend_partial_stats_height = self.epd_middle_height + 120
-        legend_no_data_stats_height = self.epd_middle_height + 136
+        legend_full_stats_height = self.epd_middle_height + 54
+        legend_partial_stats_height = self.epd_middle_height + 70
+        legend_no_data_stats_height = self.epd_middle_height + 96
 
         def pos(coords):
             x, y = coords
@@ -97,7 +97,7 @@ class Eink(Observer):
         self.screen_draw_bw.text(text_pos(legend_full_stats_height), "full - %d" % counter['full'], font=FONT_SMALL)
 
         tmp = Image.new('RGB', (15, 15), "#FFFFFF")
-        ImageDraw.Draw(tmp).rounded_rectangle(pos(0, 0), 3, fill="#FF0000", outline="#000000")
+        ImageDraw.Draw(tmp).rounded_rectangle(pos((0, 0)), 3, fill="#FF0000", outline="#000000")
         tmp = tmp.convert('1', dither=True)
         self.screen_image_bw.paste(tmp, icon_pos(legend_partial_stats_height))
         self.screen_draw_bw.text(text_pos(legend_partial_stats_height), "partial - %d" % counter['partial'],
