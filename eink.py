@@ -56,7 +56,9 @@ class Eink(Observer):
 
     @staticmethod
     def close():
+        logging.info("Clearing display")
         Eink.clear_display()
+        logging.info("Exiting module")
         epd5in83b_V2.epdconfig.module_exit()
 
     def form_image(self, regions):

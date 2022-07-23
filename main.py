@@ -14,6 +14,7 @@ def get_state():
     logging.info("Fetching state...")
     with urlopen('https://sirens.in.ua/api/v1/', timeout=10) as response:
         data = response.read()
+        logging.info(f"Got response {data}")
         return json.loads(data)
     return None
 
