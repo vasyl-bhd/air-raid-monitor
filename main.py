@@ -26,6 +26,8 @@ def main():
         print("IOError: " + str(e))
     except KeyboardInterrupt:
         observable.close()
+        exit()
+
 
 
 def main_cycle(observable):
@@ -39,12 +41,6 @@ def main_cycle(observable):
         except (HTTPError, URLError, IOError) as e:
             print("Error: " + str(e))
             timeout_count += 1
-        except KeyboardInterrupt:
-            logging.info("ctrl + c:")
-            logging.info("clearing display")
-            Eink.init_display()
-            Eink.close()
-            exit()
         finally:
             if timeout_count >= 3:
                 curr_state = None
