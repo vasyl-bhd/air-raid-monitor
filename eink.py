@@ -76,7 +76,7 @@ class Eink(Observer):
         self.draw_text()
         self.legend(regions)
 
-    def legend(self, pos, regions):
+    def legend(self, regions):
         counter = Counter(regions.values())
         legend_full_stats_height = self.epd_middle_height + 104
         legend_partial_stats_height = self.epd_middle_height + 120
