@@ -37,6 +37,7 @@ class Eink(EinkRenderer):
         screen_image_red_rotated = img_red.rotate(180)
 
         self.epd.display(self.epd.getbuffer(screen_image_rotated), self.epd.getbuffer(screen_image_red_rotated))
+        logging.info("Finish updating")
 
     @staticmethod
     def close():
