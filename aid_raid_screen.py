@@ -44,7 +44,7 @@ class AirRaidScreen(Observer):
         air_raid_map = MapGenerator(regions=regions, map_size=self.map_size).generate_map()
 
         self.screen_image_bw.paste(air_raid_map[0], (self.screen_width - self.map_size[0], 0))
-        self.screen_image_red.paste(air_raid_map[1], (self.screen_height - self.map_size[0], 0))
+        self.screen_image_red.paste(air_raid_map[1], (self.screen_width - self.map_size[0], 0))
         self.draw_text()
         self.legend(regions)
 
