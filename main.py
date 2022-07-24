@@ -4,7 +4,7 @@ import time
 from urllib.error import HTTPError, URLError
 from urllib.request import urlopen
 
-from eink import Eink
+from epd.eink import Eink
 from observer import Observable
 
 logging.basicConfig(level=logging.INFO)
