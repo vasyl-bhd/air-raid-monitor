@@ -20,8 +20,8 @@ class AirRaidScreen(Observer):
         self.eink_renderer = eink_renderer
 
         dimensions = eink_renderer.get_dimensions()
-        self.screen_width = dimensions()[0]
-        self.screen_height = dimensions()[1]
+        self.screen_width = dimensions[0]
+        self.screen_height = dimensions[1]
 
         self.screen_middle_width = self.screen_width // 2
         self.screen_middle_height = self.screen_height // 2
