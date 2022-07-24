@@ -4,6 +4,7 @@ import time
 from urllib.error import HTTPError, URLError
 from urllib.request import urlopen
 
+from aid_raid_screen import AirRaidScreen
 from epd.eink import Eink
 from observer import Observable
 
@@ -20,14 +21,15 @@ def get_state():
 
 def main():
     observable = Observable()
-    Eink(observable)
+    e_ink = Eink()
+    AirRaidScreen(observable, e_ink)
     try:
         main_cycle(observable)
     except IOError as e:
         print("IOError: " + str(e))
     except KeyboardInterrupt:
         logging.info("Interrupting keyboard")
-        observable.close()
+        e_ink.close()
         exit()
 
 

@@ -9,7 +9,6 @@ from epd.eink_renderer import EinkRenderer
 class Eink(EinkRenderer):
 
     def __init__(self):
-
         self.epd = self.init_display()
 
     @staticmethod

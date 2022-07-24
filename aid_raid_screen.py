@@ -17,7 +17,7 @@ class AirRaidScreen(Observer):
     def __init__(self, observable, eink_renderer: EinkRenderer):
         super().__init__(observable=observable)
 
-        self.eink_renderer=eink_renderer
+        self.eink_renderer = eink_renderer
 
         dimensions = eink_renderer.get_dimensions()
         self.screen_width = dimensions()[0]
@@ -90,10 +90,9 @@ class AirRaidScreen(Observer):
                                  font=FONT_SMALL)
 
     def connection_lost_text(self):
-        self.screen_draw_bw.text((self.screen_middle_width, self.screen_middle_height), 'NO CONNECTION', font=FONT_SMALL)
+        self.screen_draw_bw.text((self.screen_middle_width, self.screen_middle_height), 'NO CONNECTION',
+                                 font=FONT_SMALL)
 
     def update(self, data):
         bw, red = self.form_image(regions=data)
         self.eink_renderer.render(bw, red)
-
-
