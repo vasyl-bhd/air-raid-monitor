@@ -8,6 +8,9 @@ from epd.eink_renderer import EinkRenderer
 
 class Eink(EinkRenderer):
 
+    is_rendering: bool = False
+    epd = None
+
     def __init__(self):
         self.epd = self.init_display()
 
@@ -32,12 +35,14 @@ class Eink(EinkRenderer):
         return self.epd.width, self.epd.height
 
     def render(self, img_bw: Image, img_red: Image):
+        self.is_rendering = True
         logging.info("Updating screen")
         screen_image_rotated = img_bw.rotate(180)
         screen_image_red_rotated = img_red.rotate(180)
 
         self.epd.display(self.epd.getbuffer(screen_image_rotated), self.epd.getbuffer(screen_image_red_rotated))
         logging.info("Finish updating")
+        self.is_rendering = False
 
     @staticmethod
     def close():

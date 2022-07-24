@@ -9,7 +9,7 @@ from svglib.svglib import svg2rlg
 
 class MapGenerator:
     def __init__(self, regions, map_size):
-        self.svg = ET.parse(os.path.join(os.path.dirname(__file__), 'ua.svg'))
+        self.svg = ET.parse(os.path.join(os.path.dirname(__file__), '../ua.svg'))
         self.svg_red = deepcopy(self.svg)
         self.regions = regions
         self.size = map_size

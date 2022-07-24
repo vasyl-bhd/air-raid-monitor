@@ -4,7 +4,7 @@ import time
 from urllib.error import HTTPError, URLError
 from urllib.request import urlopen
 
-from aid_raid_screen import AirRaidScreen
+from air_raid.aid_raid_screen import AirRaidScreen
 from epd.eink import Eink
 from observer import Observable
 

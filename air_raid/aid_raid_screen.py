@@ -9,7 +9,7 @@ from observer import Observer
 
 MAP_OFFSET = (140, 130)
 FONT_SMALL = ImageFont.truetype(
-    os.path.join(os.path.dirname(__file__), 'Monaco.ttf'), 18)
+    os.path.join(os.path.dirname(__file__), '../Monaco.ttf'), 18)
 
 
 class AirRaidScreen(Observer):
